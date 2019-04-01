@@ -1,4 +1,5 @@
 import arcade
+from models import *
  
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 800
@@ -23,11 +24,27 @@ class StrikeWindow(arcade.Window):
  
         arcade.set_background_color(arcade.color.PINK_PEARL)
         self.background = arcade.load_texture("images/background.png")
+        self.hole1 = Hole(self, 200, 100)
+        self.hole2 = Hole(self, 450, 100)
+        self.hole3 = Hole(self, 700, 100)
+        self.hole4 = Hole(self, 325, 350)
+        self.hole5 = Hole(self, 575, 350)
+        self.hole6 = Hole(self, 200, 600)
+        self.hole7 = Hole(self, 450, 600)
+        self.hole8 = Hole(self, 700, 600)
  
     def on_draw(self):
         arcade.start_render()
         arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2,
-                                      SCREEN_WIDTH, SCREEN_HEIGHT, self.background)     
+                                      SCREEN_WIDTH, SCREEN_HEIGHT, self.background)
+        self.hole1.draw()
+        self.hole2.draw()
+        self.hole3.draw()
+        self.hole4.draw()
+        self.hole5.draw()
+        self.hole6.draw()
+        self.hole7.draw()
+        self.hole8.draw()
 
 
 def main():
