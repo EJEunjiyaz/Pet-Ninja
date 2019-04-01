@@ -18,12 +18,8 @@ class ModelSprite(arcade.Sprite):
         super().draw()
 
 
-class StrikeWindow(arcade.Window):
-    def __init__(self, width, height):
-        super().__init__(width, height)
- 
-        arcade.set_background_color(arcade.color.PINK_PEARL)
-        self.background = arcade.load_texture("images/background.png")
+class HoleDrawer():
+    def __init__(self):
         self.hole1 = Hole(self, 200, 100)
         self.hole2 = Hole(self, 450, 100)
         self.hole3 = Hole(self, 700, 100)
@@ -32,11 +28,8 @@ class StrikeWindow(arcade.Window):
         self.hole6 = Hole(self, 200, 600)
         self.hole7 = Hole(self, 450, 600)
         self.hole8 = Hole(self, 700, 600)
- 
-    def on_draw(self):
-        arcade.start_render()
-        arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2,
-                                      SCREEN_WIDTH, SCREEN_HEIGHT, self.background)
+    
+    def draw(self):
         self.hole1.draw()
         self.hole2.draw()
         self.hole3.draw()
@@ -45,6 +38,21 @@ class StrikeWindow(arcade.Window):
         self.hole6.draw()
         self.hole7.draw()
         self.hole8.draw()
+
+
+class StrikeWindow(arcade.Window):
+    def __init__(self, width, height):
+        super().__init__(width, height)
+ 
+        arcade.set_background_color(arcade.color.PINK_PEARL)
+        self.background = arcade.load_texture("images/background.png")
+        self.hole = HoleDrawer()
+ 
+    def on_draw(self):
+        arcade.start_render()
+        arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2,
+                                      SCREEN_WIDTH, SCREEN_HEIGHT, self.background)
+        self.hole.draw()
 
 
 def main():
