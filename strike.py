@@ -18,7 +18,7 @@ class ModelSprite(arcade.Sprite):
         super().draw()
 
 
-class HoleDrawer():
+class HoleSprite():
     def __init__(self):
         self.hole1 = Hole(self, 200, 100)
         self.hole2 = Hole(self, 450, 100)
@@ -46,13 +46,17 @@ class StrikeWindow(arcade.Window):
  
         arcade.set_background_color(arcade.color.PINK_PEARL)
         self.background = arcade.load_texture("images/background.png")
-        self.hole = HoleDrawer()
+        self.world = World(SCREEN_WIDTH, SCREEN_HEIGHT)
+
+        self.hole = HoleSprite()
+        self.rat = ModelSprite("images/rat_small.png", model=self.world.rat)
  
     def on_draw(self):
         arcade.start_render()
         arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2,
                                       SCREEN_WIDTH, SCREEN_HEIGHT, self.background)
         self.hole.draw()
+        self.rat.draw()
 
 
 def main():
