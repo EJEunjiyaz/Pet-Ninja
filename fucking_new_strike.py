@@ -1,4 +1,5 @@
 import arcade
+from random import randint
 
 # Constants
 SCREEN_WIDTH = 1000
@@ -7,7 +8,8 @@ SCREEN_TITLE = "Strike"
 
 # Constants used to scale our sprites from their original size
 PACMAN_SCALING = 0.2
-
+PACMAN_WIDTH = 384
+PACMAN_HEIGHT = 512
 
 class MyGame(arcade.Window):
     """
@@ -34,8 +36,8 @@ class MyGame(arcade.Window):
         
         # Set up the player, specifically placing it at these coordinates.
         self.pacman_sprite = arcade.Sprite("images/Pacman Green Ghost.png", PACMAN_SCALING)
-        self.pacman_sprite.center_x = 300
-        self.pacman_sprite.center_y = 300
+        self.pacman_sprite.center_x = randint(100, 900)
+        self.pacman_sprite.center_y = randint(100, 550)
         self.pacman_list.append(self.pacman_sprite)
 
     def on_draw(self):
@@ -46,6 +48,24 @@ class MyGame(arcade.Window):
 
         # Draw our sprites
         self.pacman_list.draw()
+    
+    def on_mouse_press(self, x, y, button, modifiers):
+        if button == arcade.MOUSE_BUTTON_LEFT:
+            for pacman in self.pacman_list:
+                left_position = pacman.center_x - (PACMAN_WIDTH * PACMAN_SCALING//2)
+                right_position = pacman.center_x + (PACMAN_WIDTH * PACMAN_SCALING//2)
+                top_position = pacman.center_y + (PACMAN_HEIGHT * PACMAN_SCALING//2)
+                bottom_position = pacman.center_y - (PACMAN_HEIGHT * PACMAN_SCALING//2)
+                
+                if left_position <= x <= right_position and bottom_position <= y <= top_position:
+                    self.pacman_list.pop()
+
+    def update(self, delta_time):
+        """ Movement and game logic """
+
+        # Call update on all sprites (The sprites don't do much in this
+        # example though.)
+        self.pacman_list.update()
 
 
 def main():
