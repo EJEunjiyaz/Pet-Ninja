@@ -11,7 +11,7 @@ class Hole:
     def draw(self):
         arcade.draw_ellipse_filled(self.x, self.y, 
                                 self.width, self.height, 
-                                arcade.color.ORANGE_PEEL)
+                                arcade.color.BISTRE_BROWN)
 
 
 class Rat:
@@ -26,6 +26,11 @@ class Rat:
             self.status = 0
         else:
             self.status = 1
+
+    def is_show(self):
+        if self.status == 1:
+            return True
+        return False
 
 
 class World:

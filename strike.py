@@ -18,6 +18,7 @@ class ModelSprite(arcade.Sprite):
         super().draw()
 
 
+
 class HoleSprite():
     def __init__(self):
         self.hole1 = Hole(self, 200, 100)
@@ -50,13 +51,20 @@ class StrikeWindow(arcade.Window):
 
         self.hole = HoleSprite()
         self.rat = ModelSprite("images/rat_small.png", model=self.world.rat)
- 
+
     def on_draw(self):
         arcade.start_render()
         arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2,
                                       SCREEN_WIDTH, SCREEN_HEIGHT, self.background)
         self.hole.draw()
         self.rat.draw()
+    
+    def on_mouse_press(self, x, y, button, modifiers):
+        if x-30 <= self.world.rat.x <= x+30 and y-30 <= self.world.rat.y <= y+30 and button == arcade.MOUSE_BUTTON_LEFT:
+            arcade.draw_ellipse_filled(500, 500, 30, 30, arcade.color.BABY_BLUE)
+    
+    def update(self):
+        super().update()
 
 
 def main():
