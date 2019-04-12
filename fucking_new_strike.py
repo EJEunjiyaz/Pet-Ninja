@@ -8,8 +8,7 @@ SCREEN_TITLE = "Strike"
 
 # Constants used to scale our sprites from their original size
 PACMAN_SCALING = 0.2
-PACMAN_WIDTH = 384
-PACMAN_HEIGHT = 512
+
 
 class MyGame(arcade.Window):
     """
@@ -26,6 +25,7 @@ class MyGame(arcade.Window):
 
         # Separate variable that holds the player sprite
         self.pacman_sprite = None
+        self.mouse_sprite = None
 
         arcade.set_background_color(arcade.color.CORNFLOWER_BLUE)
 
@@ -52,13 +52,15 @@ class MyGame(arcade.Window):
     def on_mouse_press(self, x, y, button, modifiers):
         if button == arcade.MOUSE_BUTTON_LEFT:
             for pacman in self.pacman_list:
-                left_position = pacman.center_x - (PACMAN_WIDTH * PACMAN_SCALING//2)
-                right_position = pacman.center_x + (PACMAN_WIDTH * PACMAN_SCALING//2)
-                top_position = pacman.center_y + (PACMAN_HEIGHT * PACMAN_SCALING//2)
-                bottom_position = pacman.center_y - (PACMAN_HEIGHT * PACMAN_SCALING//2)
+                left_position = pacman.center_x - (self.pacman_sprite.width//2)
+                right_position = pacman.center_x + (self.pacman_sprite.width//2)
+                top_position = pacman.center_y + (self.pacman_sprite.height//2)
+                bottom_position = pacman.center_y - (self.pacman_sprite.height//2)
                 
                 if left_position <= x <= right_position and bottom_position <= y <= top_position:
-                    self.pacman_list.pop()
+                    self.pacman_list.remove(pacman)
+
+    #     arcade.check_for_collision(self.pacman_sprite, )
 
     def update(self, delta_time):
         """ Movement and game logic """
