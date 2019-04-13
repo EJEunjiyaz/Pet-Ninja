@@ -36,8 +36,8 @@ class MyGame(arcade.Window):
         
         # Set up the player, specifically placing it at these coordinates.
         self.pacman_sprite = arcade.Sprite("images/Pacman Green Ghost.png", PACMAN_SCALING)
-        self.pacman_sprite.center_x = randint(100, 900)
-        self.pacman_sprite.center_y = randint(100, 550)
+        self.pacman_sprite.center_x = randint(100, SCREEN_WIDTH-100)
+        self.pacman_sprite.center_y = randint(100, SCREEN_HEIGHT-100)
         self.pacman_list.append(self.pacman_sprite)
 
     def on_draw(self):
@@ -59,8 +59,6 @@ class MyGame(arcade.Window):
                 
                 if left_position <= x <= right_position and bottom_position <= y <= top_position:
                     self.pacman_list.remove(pacman)
-
-    #     arcade.check_for_collision(self.pacman_sprite, )
 
     def update(self, delta_time):
         """ Movement and game logic """
