@@ -41,7 +41,7 @@ class MyGame(arcade.Window):
         self.pacman_sprite.center_y = randint(100, SCREEN_HEIGHT-100)
         self.model_list.append(self.pacman_sprite)
 
-        self.starfox_sprite = arcade.Sprite("images/Star Fox Waiting.png", STARFOX_SCALING)
+        self.starfox_sprite = arcade.Sprite("images/Kaimook_cut.png", STARFOX_SCALING)
         self.starfox_sprite.right = SCREEN_WIDTH
         self.starfox_sprite.center_y = randint(100, SCREEN_HEIGHT-100)
         self.model_list.append(self.starfox_sprite)
@@ -54,9 +54,9 @@ class MyGame(arcade.Window):
 
         # Draw our sprites
         self.model_list.draw()
-    
-    def on_mouse_press(self, x, y, button, modifiers):
-        if button == arcade.MOUSE_BUTTON_LEFT:
+
+    def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
+        if buttons == arcade.MOUSE_BUTTON_LEFT:
             for model in self.model_list:
                 left_position = model.center_x - (model.width//2)
                 right_position = model.center_x + (model.width//2)
@@ -72,6 +72,9 @@ class MyGame(arcade.Window):
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
         self.model_list.update()
+
+        STARFOX_VELOCITY = 4
+        self.starfox_sprite.center_x -= STARFOX_VELOCITY
 
 
 def main():
