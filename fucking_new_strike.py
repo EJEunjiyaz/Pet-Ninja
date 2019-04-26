@@ -1,6 +1,5 @@
 import arcade
 from random import randint
-from apscheduler.schedulers.background import BackgroundScheduler
 
 # Constants
 SCREEN_WIDTH = 1000
@@ -9,7 +8,8 @@ SCREEN_TITLE = "Strike"
 
 # Constants used to scale our sprites from their original size
 PACMAN_SCALING = 0.15
-BEAR_SCALING = 0.3
+BEAR_SCALING = 0.4
+BOMB_SCALING = 0.2
 
 # Constants used to config velocity of the sprites
 
@@ -38,9 +38,10 @@ class MyGame(arcade.Window):
         
         self.pacman_sprite = arcade.Sprite("images/Pacman Green Ghost.png", PACMAN_SCALING)
         self.bear_sprite = arcade.Sprite("images/Crossy Road Bear.png", BEAR_SCALING)
+        self.bomb_sprite = arcade.Sprite("images/Cherry Bomb the Baby Boomer.png", BOMB_SCALING)
         
-        list = [self.pacman_sprite, self.bear_sprite]
-        random_sprite = randint(0, 1)
+        list = [self.pacman_sprite, self.bear_sprite, self.bomb_sprite]
+        random_sprite = randint(0, 2)
         random_number = randint(0, 1)
         # Still
         if random_number == 0:
@@ -98,12 +99,15 @@ class MyGame(arcade.Window):
         # example though.)
         self.model_list.update()
         
-        if self.time <= 3:
+        if self.time <= 1:
             self.time += delta_time
         else:
             self.setup()
             self.time = 0
         
+        for model in self.model_list:
+            if model.right < 0 or model.left > SCREEN_WIDTH or model.top < 0 or model.bottom > SCREEN_HEIGHT:
+                self.model_list.remove(model)
 
 
 def main():
