@@ -1,5 +1,6 @@
 import arcade
 from random import randint
+from apscheduler.schedulers.background import BackgroundScheduler
 
 # Constants
 SCREEN_WIDTH = 1000
@@ -23,71 +24,48 @@ class MyGame(arcade.Window):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
         
         # These are 'lists' that keep track of our sprites. Each sprite should go into a list.
-        self.model_list = None
-
+        self.model_list = arcade.SpriteList()
         # Separate variable that holds the player sprite
         self.pacman_sprite = None
         self.bear_sprite = None
+        # Count time for spawn model sprite
+        self.time = 0
         
         arcade.set_background_color(arcade.color.CORNFLOWER_BLUE)
 
     def setup(self):
         """ Set up the game here. Call this function to restart the game. """
         
-        # Create the Sprite lists
-        self.model_list = arcade.SpriteList()
-        
-        # Set up the player, specifically placing it at these coordinates.
         self.pacman_sprite = arcade.Sprite("images/Pacman Green Ghost.png", PACMAN_SCALING)
-        # Random mechanic for pacman
-        random_pacman = randint(1, 2)
-        # Still
-        if random_pacman == 1:
-            self.pacman_sprite.center_x = randint(100, SCREEN_WIDTH-100)
-            self.pacman_sprite.center_y = randint(100, SCREEN_HEIGHT-100)
-        # Straight down
-        elif random_pacman == 2:
-            velocity = randint(1, 4)
-            direction = randint(1, 2)
-            self.pacman_sprite.center_y = randint(200, SCREEN_HEIGHT)
-            if direction == 1:
-                self.pacman_sprite.right = 0
-                self.pacman_sprite.center_y = randint(300, SCREEN_HEIGHT-50)
-                self.pacman_sprite.velocity = (velocity,-1)
-            else:
-                self.pacman_sprite.left = SCREEN_WIDTH
-                self.pacman_sprite.center_y = randint(300, SCREEN_HEIGHT-50)
-                self.pacman_sprite.velocity = (-velocity,-1)
-        self.model_list.append(self.pacman_sprite)
-
         self.bear_sprite = arcade.Sprite("images/Crossy Road Bear.png", BEAR_SCALING)
-        # Random mechanic for bear
-        random_bear = randint(1, 2)
+        
+        list = [self.pacman_sprite, self.bear_sprite]
+        random_sprite = randint(0, 1)
+        random_number = randint(0, 1)
         # Still
-        if random_bear == 1:
-            self.bear_sprite.center_x = randint(100, SCREEN_WIDTH-100)
-            self.bear_sprite.center_y = randint(100, SCREEN_HEIGHT-100)
+        if random_number == 0:
+            list[random_sprite].center_x = randint(100, SCREEN_WIDTH-100)
+            list[random_sprite].center_y = randint(100, SCREEN_HEIGHT-100)
         # Straight down
-        elif random_bear == 2:
+        elif random_number == 1:
             velocity = randint(1, 4)
-            direction = randint(1, 2)
-            self.bear_sprite.center_y = randint(200, SCREEN_HEIGHT)
-            if direction == 1:
-                self.bear_sprite.right = 0
-                self.bear_sprite.center_y = randint(300, SCREEN_HEIGHT-50)
-                self.bear_sprite.velocity = (velocity,-1)
+            direction = randint(0, 1)
+            list[random_sprite].center_y = randint(200, SCREEN_HEIGHT)
+            if direction == 0:
+                list[random_sprite].right = 0
+                list[random_sprite].center_y = randint(300, SCREEN_HEIGHT-50)
+                list[random_sprite].velocity = (velocity,-1)
             else:
-                self.bear_sprite.left = SCREEN_WIDTH
-                self.bear_sprite.center_y = randint(300, SCREEN_HEIGHT-50)
-                self.bear_sprite.velocity = (-velocity,-1)
-        self.model_list.append(self.bear_sprite)
+                list[random_sprite].left = SCREEN_WIDTH
+                list[random_sprite].center_y = randint(300, SCREEN_HEIGHT-50)
+                list[random_sprite].velocity = (-velocity,-1)
+        self.model_list.append(list[random_sprite])
 
     def on_draw(self):
         """ Render the screen. """
 
         # Clear the screen to the background color
         arcade.start_render()
-
         # Draw our sprites
         self.model_list.draw()
 
@@ -119,6 +97,13 @@ class MyGame(arcade.Window):
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
         self.model_list.update()
+        
+        if self.time <= 3:
+            self.time += delta_time
+        else:
+            self.setup()
+            self.time = 0
+        
 
 
 def main():
