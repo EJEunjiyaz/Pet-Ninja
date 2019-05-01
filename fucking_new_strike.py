@@ -1,5 +1,5 @@
 import arcade
-from random import randint
+from random import randint, randrange
 
 # Constants
 SCREEN_WIDTH = 1000
@@ -43,23 +43,27 @@ class MyGame(arcade.Window):
         list = [self.pacman_sprite, self.bear_sprite, self.bomb_sprite]
         random_sprite = randint(0, 2)
         random_number = randint(0, 1)
-        # Still
-        if random_number == 0:
-            list[random_sprite].center_x = randint(100, SCREEN_WIDTH-100)
-            list[random_sprite].center_y = randint(100, SCREEN_HEIGHT-100)
         # Straight down
-        elif random_number == 1:
+        # if random_number == 1:
+        if True:
             velocity = randint(1, 4)
             direction = randint(0, 1)
+            y = randrange(-1,2,2)
             list[random_sprite].center_y = randint(200, SCREEN_HEIGHT)
             if direction == 0:
                 list[random_sprite].right = 0
-                list[random_sprite].center_y = randint(300, SCREEN_HEIGHT-50)
-                list[random_sprite].velocity = (velocity,-1)
+                if y < 0:
+                    list[random_sprite].center_y = randint(SCREEN_HEIGHT/2, SCREEN_HEIGHT-50)
+                else:
+                    list[random_sprite].center_y = randint(50, SCREEN_HEIGHT/2)
+                list[random_sprite].velocity = (velocity, y)
             else:
                 list[random_sprite].left = SCREEN_WIDTH
-                list[random_sprite].center_y = randint(300, SCREEN_HEIGHT-50)
-                list[random_sprite].velocity = (-velocity,-1)
+                if y < 0:
+                    list[random_sprite].center_y = randint(SCREEN_HEIGHT/2, SCREEN_HEIGHT-50)
+                else:
+                    list[random_sprite].center_y = randint(50, SCREEN_HEIGHT/2)
+                list[random_sprite].velocity = (-velocity, y)
         self.model_list.append(list[random_sprite])
 
     def on_draw(self):
