@@ -30,6 +30,8 @@ class MyGame(arcade.Window):
         self.bear_sprite = None
         # Count time for spawn model sprite
         self.time = 0
+        # Keep the score
+        self.score = 0
         
         arcade.set_background_color(arcade.color.CORNFLOWER_BLUE)
 
@@ -73,6 +75,8 @@ class MyGame(arcade.Window):
         arcade.start_render()
         # Draw our sprites
         self.model_list.draw()
+        # Draw text
+        arcade.draw_text(f'score {self.score}', SCREEN_WIDTH-100, SCREEN_HEIGHT-30, arcade.color.BLACK_LEATHER_JACKET, 18)
 
     def on_mouse_press(self, x, y, button, modifiers):
         if button == arcade.MOUSE_BUTTON_LEFT:
@@ -83,6 +87,8 @@ class MyGame(arcade.Window):
                 bottom_position = model.center_y - (model.height//2)
                 
                 if left_position <= x <= right_position and bottom_position <= y <= top_position:
+                    self.score += 1
+
                     self.model_list.remove(model)
 
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
@@ -94,6 +100,8 @@ class MyGame(arcade.Window):
                 bottom_position = model.center_y - (model.height//2)
                 
                 if left_position <= x <= right_position and bottom_position <= y <= top_position:
+                    self.score += 1
+
                     self.model_list.remove(model)
 
     def update(self, delta_time):
