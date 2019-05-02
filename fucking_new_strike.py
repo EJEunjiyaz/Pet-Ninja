@@ -1,5 +1,6 @@
 import arcade
 from random import randint, randrange
+from time import time
 
 # Constants
 SCREEN_WIDTH = 1000
@@ -25,9 +26,11 @@ class MyGame(arcade.Window):
         
         # These are 'lists' that keep track of our sprites. Each sprite should go into a list.
         self.model_list = arcade.SpriteList()
+        self.bomb_list = arcade.SpriteList()
         # Separate variable that holds the player sprite
         self.pacman_sprite = None
         self.bear_sprite = None
+        self.bomb_sprite = None
         # Count time for spawn model sprite
         self.time = 0
         # Keep the score
@@ -66,7 +69,11 @@ class MyGame(arcade.Window):
                 else:
                     list[random_sprite].center_y = randint(50, SCREEN_HEIGHT/2)
                 list[random_sprite].velocity = (-velocity, y)
-        self.model_list.append(list[random_sprite])
+        
+        if random_sprite != 2:
+            self.model_list.append(list[random_sprite])
+        else:
+            self.bomb_list.append(list[random_sprite])
 
     def on_draw(self):
         """ Render the screen. """
@@ -75,6 +82,7 @@ class MyGame(arcade.Window):
         arcade.start_render()
         # Draw our sprites
         self.model_list.draw()
+        self.bomb_list.draw()
         # Draw text
         arcade.draw_text(f'score {self.score}', SCREEN_WIDTH-100, SCREEN_HEIGHT-30, arcade.color.BLACK_LEATHER_JACKET, 18)
 
@@ -88,8 +96,17 @@ class MyGame(arcade.Window):
                 
                 if left_position <= x <= right_position and bottom_position <= y <= top_position:
                     self.score += 1
-
                     self.model_list.remove(model)
+        
+            for bomb in self.bomb_list:
+                left_position = bomb.center_x - (bomb.width//2)
+                right_position = bomb.center_x + (bomb.width//2)
+                top_position = bomb.center_y + (bomb.height//2)
+                bottom_position = bomb.center_y - (bomb.height//2)
+                
+                if left_position <= x <= right_position and bottom_position <= y <= top_position:
+                    self.score -= 1
+                    self.bomb_list.remove(bomb)
 
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         if buttons == arcade.MOUSE_BUTTON_LEFT:
@@ -98,11 +115,20 @@ class MyGame(arcade.Window):
                 right_position = model.center_x + (model.width//2)
                 top_position = model.center_y + (model.height//2)
                 bottom_position = model.center_y - (model.height//2)
-                
+                    
                 if left_position <= x <= right_position and bottom_position <= y <= top_position:
                     self.score += 1
-
                     self.model_list.remove(model)
+            
+            for bomb in self.bomb_list:
+                left_position = bomb.center_x - (bomb.width//2)
+                right_position = bomb.center_x + (bomb.width//2)
+                top_position = bomb.center_y + (bomb.height//2)
+                bottom_position = bomb.center_y - (bomb.height//2)
+                
+                if left_position <= x <= right_position and bottom_position <= y <= top_position:
+                    self.score -= 1
+                    self.bomb_list.remove(bomb)
 
     def update(self, delta_time):
         """ Movement and game logic """
@@ -110,6 +136,7 @@ class MyGame(arcade.Window):
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
         self.model_list.update()
+        self.bomb_list.update()
         
         if self.time <= 1:
             self.time += delta_time
@@ -120,6 +147,10 @@ class MyGame(arcade.Window):
         for model in self.model_list:
             if model.right < 0 or model.left > SCREEN_WIDTH or model.top < 0 or model.bottom > SCREEN_HEIGHT:
                 self.model_list.remove(model)
+        
+        for bomb in self.bomb_list:
+            if bomb.right < 0 or bomb.left > SCREEN_WIDTH or bomb.top < 0 or bomb.bottom > SCREEN_HEIGHT:
+                self.bomb_list.remove(bomb)
 
 
 def main():
