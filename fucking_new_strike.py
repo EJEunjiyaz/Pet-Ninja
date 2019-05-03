@@ -12,7 +12,7 @@ PACMAN_SCALING = 0.15
 BEAR_SCALING = 0.4
 BOMB_SCALING = 0.2
 
-# Constants used to config velocity of the sprites
+HEART_SCALING = 0.06
 
 class MyGame(arcade.Window):
     """
@@ -27,6 +27,7 @@ class MyGame(arcade.Window):
         # These are 'lists' that keep track of our sprites. Each sprite should go into a list.
         self.model_list = arcade.SpriteList()
         self.bomb_list = arcade.SpriteList()
+        self.heart_list = arcade.SpriteList()
         # Separate variable that holds the player sprite
         self.pacman_sprite = None
         self.bear_sprite = None
@@ -35,6 +36,7 @@ class MyGame(arcade.Window):
         self.time = 0
         # Keep the score
         self.score = 0
+        self.life = 0
         
         arcade.set_background_color(arcade.color.CORNFLOWER_BLUE)
 
@@ -44,14 +46,21 @@ class MyGame(arcade.Window):
         self.pacman_sprite = arcade.Sprite("images/Pacman Green Ghost.png", PACMAN_SCALING)
         self.bear_sprite = arcade.Sprite("images/Crossy Road Bear.png", BEAR_SCALING)
         self.bomb_sprite = arcade.Sprite("images/Cherry Bomb the Baby Boomer.png", BOMB_SCALING)
+
+        self.heart1 = arcade.Sprite("images/heart.png", HEART_SCALING)
+        self.heart2 = arcade.Sprite("images/heart.png", HEART_SCALING)
+        self.heart3 = arcade.Sprite("images/heart.png", HEART_SCALING)
+        self.heart4 = arcade.Sprite("images/heart.png", HEART_SCALING)
+        self.heart5 = arcade.Sprite("images/heart.png", HEART_SCALING)
         
         list = [self.pacman_sprite, self.bear_sprite, self.bomb_sprite]
-        random_sprite = randint(0, 2)
-        random_number = randint(0, 1)
+        list_heart = [self.heart1, self.heart2, self.heart3, self.heart4, self.heart5]
+        
         # Straight down
         # if random_number == 1:
         if True:
-            velocity = randint(1, 4)
+            random_sprite = randint(0, 2)
+            velocity = randint(8, 14)
             direction = randint(0, 1)
             y = randrange(-1,2,2)
             list[random_sprite].center_y = randint(200, SCREEN_HEIGHT)
@@ -70,11 +79,16 @@ class MyGame(arcade.Window):
                     list[random_sprite].center_y = randint(50, SCREEN_HEIGHT/2)
                 list[random_sprite].velocity = (-velocity, y)
         
-        if random_sprite != 2:
-            self.model_list.append(list[random_sprite])
-        else:
-            self.bomb_list.append(list[random_sprite])
-
+            if random_sprite != 2:
+                self.model_list.append(list[random_sprite])
+            else:
+                self.bomb_list.append(list[random_sprite])
+        
+        for i in range(len(list_heart)):
+            list_heart[i].center_x = SCREEN_WIDTH - (30*i) - 25
+            list_heart[i].center_y = SCREEN_HEIGHT - 55
+            self.heart_list.append(list_heart[i])
+        
     def on_draw(self):
         """ Render the screen. """
 
@@ -83,8 +97,9 @@ class MyGame(arcade.Window):
         # Draw our sprites
         self.model_list.draw()
         self.bomb_list.draw()
+        self.heart_list.draw()
         # Draw text
-        arcade.draw_text(f'score {self.score}', SCREEN_WIDTH-100, SCREEN_HEIGHT-30, arcade.color.BLACK_LEATHER_JACKET, 18)
+        arcade.draw_text(f'score {self.score}', SCREEN_WIDTH-120, SCREEN_HEIGHT-30, arcade.color.BLACK_LEATHER_JACKET, 18)
 
     def on_mouse_press(self, x, y, button, modifiers):
         if button == arcade.MOUSE_BUTTON_LEFT:
@@ -137,8 +152,9 @@ class MyGame(arcade.Window):
         # example though.)
         self.model_list.update()
         self.bomb_list.update()
+        self.heart_list.update()
         
-        if self.time <= 1:
+        if self.time <= 0.3:
             self.time += delta_time
         else:
             self.setup()
