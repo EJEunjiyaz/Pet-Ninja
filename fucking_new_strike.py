@@ -191,7 +191,11 @@ class MyGame(arcade.Window):
         
         for model in self.model_list:
             if model.right < 0 or model.left > SCREEN_WIDTH or model.top < 0 or model.bottom > SCREEN_HEIGHT:
-                self.model_list.remove(model)
+                if len(self.heart_list) > 0:
+                    self.heart_list.pop()
+                    self.model_list.remove(model)
+                else:
+                    self.state = 'dead'             
         
         for bomb in self.bomb_list:
             if bomb.right < 0 or bomb.left > SCREEN_WIDTH or bomb.top < 0 or bomb.bottom > SCREEN_HEIGHT:
