@@ -46,7 +46,7 @@ class MyGame(arcade.Window):
         self.time = 0
         # Keep the score
         self.score = 0
-        self.state = 'active'
+        self.state = 'stop'
         
         arcade.set_background_color(arcade.color.CORNFLOWER_BLUE)
 
@@ -108,7 +108,9 @@ class MyGame(arcade.Window):
         # Clear the screen to the background color
         arcade.start_render()
         # Draw our sprites
-        if self.state == 'active':
+        if self.state == 'stop':
+            arcade.draw_text('Press left mouse to start...', 400, 200, arcade.color.WHITE, 40)
+        elif self.state == 'active':
             self.model_list.draw()
             self.bomb_list.draw()
             self.heart_list.draw()
@@ -120,28 +122,30 @@ class MyGame(arcade.Window):
 
     def on_mouse_press(self, x, y, button, modifiers):
         if button == arcade.MOUSE_BUTTON_LEFT:
-            for model in self.model_list:
-                left_position = model.center_x - (model.width//2)
-                right_position = model.center_x + (model.width//2)
-                top_position = model.center_y + (model.height//2)
-                bottom_position = model.center_y - (model.height//2)
-                
-                if left_position <= x <= right_position and bottom_position <= y <= top_position:
-                    self.score += 1
-                    self.model_list.remove(model)
-        
-            for bomb in self.bomb_list:
-                left_position = bomb.center_x - (bomb.width//2)
-                right_position = bomb.center_x + (bomb.width//2)
-                top_position = bomb.center_y + (bomb.height//2)
-                bottom_position = bomb.center_y - (bomb.height//2)
-                
-                if left_position <= x <= right_position and bottom_position <= y <= top_position:
-                    if len(self.heart_list) > 0:
-                        self.heart_list.pop()
-                    else:
-                        self.state = 'dead'
-                    self.bomb_list.remove(bomb)
+            if self.state == 'stop':
+                self.state = 'active'
+                for model in self.model_list:
+                    left_position = model.center_x - (model.width//2)
+                    right_position = model.center_x + (model.width//2)
+                    top_position = model.center_y + (model.height//2)
+                    bottom_position = model.center_y - (model.height//2)
+                    
+                    if left_position <= x <= right_position and bottom_position <= y <= top_position:
+                        self.score += 1
+                        self.model_list.remove(model)
+            
+                for bomb in self.bomb_list:
+                    left_position = bomb.center_x - (bomb.width//2)
+                    right_position = bomb.center_x + (bomb.width//2)
+                    top_position = bomb.center_y + (bomb.height//2)
+                    bottom_position = bomb.center_y - (bomb.height//2)
+                    
+                    if left_position <= x <= right_position and bottom_position <= y <= top_position:
+                        if len(self.heart_list) > 0:
+                            self.heart_list.pop()
+                        else:
+                            self.state = 'dead'
+                        self.bomb_list.remove(bomb)
 
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         if buttons == arcade.MOUSE_BUTTON_LEFT:
