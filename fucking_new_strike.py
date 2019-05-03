@@ -11,8 +11,12 @@ SCREEN_TITLE = "Strike"
 PACMAN_SCALING = 0.15
 BEAR_SCALING = 0.4
 BOMB_SCALING = 0.2
-
 HEART_SCALING = 0.06
+
+# Constants for game config
+SPAWN_SECONDS = 0.4
+VELOCITY_MIN = 4
+VELOCITY_MAX = 10
 
 class MyGame(arcade.Window):
     """
@@ -32,35 +36,33 @@ class MyGame(arcade.Window):
         self.pacman_sprite = None
         self.bear_sprite = None
         self.bomb_sprite = None
+
+        self.heart1 = None
+        self.heart2 = None
+        self.heart3 = None
+        self.heart4 = None
+        self.heart5 = None
         # Count time for spawn model sprite
         self.time = 0
         # Keep the score
         self.score = 0
-        self.life = 0
         
         arcade.set_background_color(arcade.color.CORNFLOWER_BLUE)
 
     def setup(self):
         """ Set up the game here. Call this function to restart the game. """
-        
+
         self.pacman_sprite = arcade.Sprite("images/Pacman Green Ghost.png", PACMAN_SCALING)
         self.bear_sprite = arcade.Sprite("images/Crossy Road Bear.png", BEAR_SCALING)
         self.bomb_sprite = arcade.Sprite("images/Cherry Bomb the Baby Boomer.png", BOMB_SCALING)
-
-        self.heart1 = arcade.Sprite("images/heart.png", HEART_SCALING)
-        self.heart2 = arcade.Sprite("images/heart.png", HEART_SCALING)
-        self.heart3 = arcade.Sprite("images/heart.png", HEART_SCALING)
-        self.heart4 = arcade.Sprite("images/heart.png", HEART_SCALING)
-        self.heart5 = arcade.Sprite("images/heart.png", HEART_SCALING)
         
         list = [self.pacman_sprite, self.bear_sprite, self.bomb_sprite]
-        list_heart = [self.heart1, self.heart2, self.heart3, self.heart4, self.heart5]
         
         # Straight down
         # if random_number == 1:
         if True:
             random_sprite = randint(0, 2)
-            velocity = randint(8, 14)
+            velocity = randint(VELOCITY_MIN, VELOCITY_MAX)
             direction = randint(0, 1)
             y = randrange(-1,2,2)
             list[random_sprite].center_y = randint(200, SCREEN_HEIGHT)
@@ -83,12 +85,22 @@ class MyGame(arcade.Window):
                 self.model_list.append(list[random_sprite])
             else:
                 self.bomb_list.append(list[random_sprite])
-        
+    
+    def setup_heart(self):
+        self.heart1 = arcade.Sprite("images/heart.png", HEART_SCALING)
+        self.heart2 = arcade.Sprite("images/heart.png", HEART_SCALING)
+        self.heart3 = arcade.Sprite("images/heart.png", HEART_SCALING)
+        self.heart4 = arcade.Sprite("images/heart.png", HEART_SCALING)
+        self.heart5 = arcade.Sprite("images/heart.png", HEART_SCALING)
+
+        list_heart = [self.heart1, self.heart2, self.heart3, self.heart4, self.heart5]
+
         for i in range(len(list_heart)):
-            list_heart[i].center_x = SCREEN_WIDTH - (30*i) - 25
+            list_heart[i].center_x = SCREEN_WIDTH - (30*i) - 50
             list_heart[i].center_y = SCREEN_HEIGHT - 55
             self.heart_list.append(list_heart[i])
-        
+        print(">>>", len(self.heart_list))
+
     def on_draw(self):
         """ Render the screen. """
 
@@ -120,7 +132,7 @@ class MyGame(arcade.Window):
                 bottom_position = bomb.center_y - (bomb.height//2)
                 
                 if left_position <= x <= right_position and bottom_position <= y <= top_position:
-                    self.score -= 1
+                    self.heart_list.pop()
                     self.bomb_list.remove(bomb)
 
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
@@ -142,7 +154,9 @@ class MyGame(arcade.Window):
                 bottom_position = bomb.center_y - (bomb.height//2)
                 
                 if left_position <= x <= right_position and bottom_position <= y <= top_position:
-                    self.score -= 1
+                    print(len(self.heart_list))
+                    self.heart_list.pop()
+                    print(len(self.heart_list))
                     self.bomb_list.remove(bomb)
 
     def update(self, delta_time):
@@ -154,7 +168,7 @@ class MyGame(arcade.Window):
         self.bomb_list.update()
         self.heart_list.update()
         
-        if self.time <= 0.3:
+        if self.time <= SPAWN_SECONDS:
             self.time += delta_time
         else:
             self.setup()
@@ -172,7 +186,8 @@ class MyGame(arcade.Window):
 def main():
     """ Main method """
     window = MyGame()
-    window.setup()
+    window.setup_heart()
+    # window.setup()
     arcade.run()
 
 
