@@ -46,6 +46,7 @@ class MyGame(arcade.Window):
         self.time = 0
         # Keep the score
         self.score = 0
+        self.state = 'active'
         
         arcade.set_background_color(arcade.color.CORNFLOWER_BLUE)
 
@@ -60,7 +61,7 @@ class MyGame(arcade.Window):
         
         # Straight down
         # if random_number == 1:
-        if True:
+        if self.state == 'active':
             random_sprite = randint(0, 2)
             velocity = randint(VELOCITY_MIN, VELOCITY_MAX)
             direction = randint(0, 1)
@@ -99,7 +100,7 @@ class MyGame(arcade.Window):
             list_heart[i].center_x = SCREEN_WIDTH - (30*i) - 50
             list_heart[i].center_y = SCREEN_HEIGHT - 55
             self.heart_list.append(list_heart[i])
-        print(">>>", len(self.heart_list))
+        # print(">>>", len(self.heart_list))
 
     def on_draw(self):
         """ Render the screen. """
@@ -107,11 +108,15 @@ class MyGame(arcade.Window):
         # Clear the screen to the background color
         arcade.start_render()
         # Draw our sprites
-        self.model_list.draw()
-        self.bomb_list.draw()
-        self.heart_list.draw()
-        # Draw text
-        arcade.draw_text(f'score {self.score}', SCREEN_WIDTH-120, SCREEN_HEIGHT-30, arcade.color.BLACK_LEATHER_JACKET, 18)
+        if self.state == 'active':
+            self.model_list.draw()
+            self.bomb_list.draw()
+            self.heart_list.draw()
+            # Draw text
+            arcade.draw_text(f'SCORE {self.score}', SCREEN_WIDTH-120, SCREEN_HEIGHT-30, arcade.color.BLACK, 16, font_name='Centaur', bold=True)
+        
+        elif self.state == 'dead':
+            arcade.draw_text('GAME OVER', 300, SCREEN_HEIGHT/2, arcade.color.RED_ORANGE, 60, font_name='Showcard Gothic')
 
     def on_mouse_press(self, x, y, button, modifiers):
         if button == arcade.MOUSE_BUTTON_LEFT:
@@ -132,7 +137,10 @@ class MyGame(arcade.Window):
                 bottom_position = bomb.center_y - (bomb.height//2)
                 
                 if left_position <= x <= right_position and bottom_position <= y <= top_position:
-                    self.heart_list.pop()
+                    if len(self.heart_list) > 0:
+                        self.heart_list.pop()
+                    else:
+                        self.state = 'dead'
                     self.bomb_list.remove(bomb)
 
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
@@ -154,9 +162,12 @@ class MyGame(arcade.Window):
                 bottom_position = bomb.center_y - (bomb.height//2)
                 
                 if left_position <= x <= right_position and bottom_position <= y <= top_position:
-                    print(len(self.heart_list))
-                    self.heart_list.pop()
-                    print(len(self.heart_list))
+                    # print(len(self.heart_list))
+                    if len(self.heart_list) > 0:
+                        self.heart_list.pop()
+                    else:
+                        self.state = 'dead'
+                    # print(len(self.heart_list))
                     self.bomb_list.remove(bomb)
 
     def update(self, delta_time):
@@ -167,7 +178,7 @@ class MyGame(arcade.Window):
         self.model_list.update()
         self.bomb_list.update()
         self.heart_list.update()
-        
+
         if self.time <= SPAWN_SECONDS:
             self.time += delta_time
         else:
