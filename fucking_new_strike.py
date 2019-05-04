@@ -1,6 +1,5 @@
 import arcade
 from random import randint, randrange
-from time import time
 
 # Constants
 SCREEN_WIDTH = 1000
@@ -11,6 +10,16 @@ SCREEN_TITLE = "Strike"
 PACMAN_SCALING = 0.15
 BEAR_SCALING = 0.4
 BOMB_SCALING = 0.2
+BROWNDOG_SCALING = 0.2
+BUNNY_SCALING = 0.3
+CAT_SCALING = 0.27
+CHICKEN_SCALING = 0.2
+COW_SCALING = 0.4
+DOG_SCALING = 0.26
+DUCK_SCALING = 0.2
+ELEPHANT_SCALING = 0.36
+LION_SCALING = 0.5
+
 HEART_SCALING = 0.06
 
 # Constants for game config
@@ -33,9 +42,16 @@ class MyGame(arcade.Window):
         self.bomb_list = arcade.SpriteList()
         self.heart_list = arcade.SpriteList()
         # Separate variable that holds the player sprite
-        self.pacman_sprite = None
-        self.bear_sprite = None
         self.bomb_sprite = None
+        self.bear_sprite = None
+        self.browndog_sprite = None
+        self.bunny_sprite = None
+        self.cat_sprite = None
+        self.chicken_sprite = None
+        self.dog_sprite = None
+        self.duck_sprite = None
+        self.elephant_sprite = None
+        self.lion_sprite = None
 
         self.heart1 = None
         self.heart2 = None
@@ -53,16 +69,24 @@ class MyGame(arcade.Window):
     def setup(self):
         """ Set up the game here. Call this function to restart the game. """
 
-        self.pacman_sprite = arcade.Sprite("images/Pacman Green Ghost.png", PACMAN_SCALING)
-        self.bear_sprite = arcade.Sprite("images/Crossy Road Bear.png", BEAR_SCALING)
         self.bomb_sprite = arcade.Sprite("images/Cherry Bomb the Baby Boomer.png", BOMB_SCALING)
+        self.bear_sprite = arcade.Sprite("images/Crossy Road Bear.png", BEAR_SCALING)
+        self.browndog_sprite = arcade.Sprite("images/Crossy Road Brown Dog.png", BROWNDOG_SCALING)
+        self.bunny_sprite = arcade.Sprite("images/Crossy Road Bunny.png", BUNNY_SCALING)
+        self.cat_sprite = arcade.Sprite("images/Crossy Road Cat.png", CAT_SCALING)
+        self.chicken_sprite = arcade.Sprite("images/Crossy Road Chicken.png", CHICKEN_SCALING)
+        self.dog_sprite = arcade.Sprite("images/Crossy Road Dog.png", DOG_SCALING)
+        self.duck_sprite = arcade.Sprite("images/Crossy Road Duck.png", DUCK_SCALING)
+        self.elephant_sprite = arcade.Sprite("images/Crossy Road Elephant.png", ELEPHANT_SCALING)
+        self.lion_sprite = arcade.Sprite("images/Crossy Road Lion Heart.png", LION_SCALING)
         
-        list = [self.pacman_sprite, self.bear_sprite, self.bomb_sprite]
+        list = [self.bomb_sprite, self.bear_sprite, self.browndog_sprite, self.bunny_sprite, self.cat_sprite,
+                self.chicken_sprite, self.dog_sprite, self.duck_sprite, self.elephant_sprite, self.lion_sprite]
         
         # Straight down
         # if random_number == 1:
         if self.state == 'active':
-            random_sprite = randint(0, 2)
+            random_sprite = randrange(0, len(list))
             velocity = randint(VELOCITY_MIN, VELOCITY_MAX)
             direction = randint(0, 1)
             y = randrange(-1,2,2)
@@ -82,11 +106,11 @@ class MyGame(arcade.Window):
                     list[random_sprite].center_y = randint(50, SCREEN_HEIGHT/2)
                 list[random_sprite].velocity = (-velocity, y)
         
-            if random_sprite != 2:
+            if random_sprite != 0:
                 self.model_list.append(list[random_sprite])
             else:
                 self.bomb_list.append(list[random_sprite])
-    
+     
     def setup_heart(self):
         self.heart1 = arcade.Sprite("images/heart.png", HEART_SCALING)
         self.heart2 = arcade.Sprite("images/heart.png", HEART_SCALING)

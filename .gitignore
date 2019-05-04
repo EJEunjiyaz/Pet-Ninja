@@ -2,3 +2,4 @@ finalproject.code-workspace
 __pycache__/models.cpython-37.pyc
 models.py
 strike.py
+test.py
