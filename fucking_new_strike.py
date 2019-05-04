@@ -2,8 +2,8 @@ import arcade
 from random import randint, randrange
 
 # Constants
-SCREEN_WIDTH = 1000
-SCREEN_HEIGHT = 650
+SCREEN_WIDTH = 1500
+SCREEN_HEIGHT = 850
 SCREEN_TITLE = "Strike"
 
 # Constants used to scale our sprites from their original size
@@ -26,6 +26,7 @@ HEART_SCALING = 0.06
 SPAWN_SECONDS = 0.4
 VELOCITY_MIN = 4
 VELOCITY_MAX = 10
+VELOCITY_Y = 3
 
 class MyGame(arcade.Window):
     """
@@ -89,21 +90,25 @@ class MyGame(arcade.Window):
             random_sprite = randrange(0, len(list))
             velocity = randint(VELOCITY_MIN, VELOCITY_MAX)
             direction = randint(0, 1)
-            y = randrange(-1,2,2)
+            y = randint(-VELOCITY_Y, VELOCITY_Y)
             list[random_sprite].center_y = randint(200, SCREEN_HEIGHT)
             if direction == 0:
                 list[random_sprite].right = 0
                 if y < 0:
                     list[random_sprite].center_y = randint(SCREEN_HEIGHT/2, SCREEN_HEIGHT-50)
-                else:
+                elif y > 0:
                     list[random_sprite].center_y = randint(50, SCREEN_HEIGHT/2)
+                else:
+                    list[random_sprite].center_y = randint(100, SCREEN_HEIGHT-100)
                 list[random_sprite].velocity = (velocity, y)
             else:
                 list[random_sprite].left = SCREEN_WIDTH
                 if y < 0:
                     list[random_sprite].center_y = randint(SCREEN_HEIGHT/2, SCREEN_HEIGHT-50)
-                else:
+                elif y > 0:
                     list[random_sprite].center_y = randint(50, SCREEN_HEIGHT/2)
+                else:
+                    list[random_sprite].center_y = randint(100, SCREEN_HEIGHT-100)
                 list[random_sprite].velocity = (-velocity, y)
         
             if random_sprite != 0:
@@ -216,7 +221,7 @@ class MyGame(arcade.Window):
         for model in self.model_list:
             if model.right < 0 or model.left > SCREEN_WIDTH or model.top < 0 or model.bottom > SCREEN_HEIGHT:
                 if len(self.heart_list) > 0:
-                    self.heart_list.pop()
+                    # self.heart_list.pop()
                     self.model_list.remove(model)
                 else:
                     self.state = 'dead'             
