@@ -7,25 +7,30 @@ SCREEN_HEIGHT = 850
 SCREEN_TITLE = "Strike"
 
 # Constants used to scale our sprites from their original size
-PACMAN_SCALING = 0.15
-BEAR_SCALING = 0.4
-BOMB_SCALING = 0.2
+BOMB_SCALING = 0.27
+BEAR_SCALING = 0.5
 BROWNDOG_SCALING = 0.2
 BUNNY_SCALING = 0.3
-CAT_SCALING = 0.27
+CAT_SCALING = 0.3
 CHICKEN_SCALING = 0.2
 COW_SCALING = 0.4
 DOG_SCALING = 0.26
 DUCK_SCALING = 0.2
 ELEPHANT_SCALING = 0.36
 LION_SCALING = 0.5
+PIG_SCALING = 0.5
+RABBIT_SCALING = 0.2
+REINDEER_SCALING = 0.5
+SHEEP_SCALING = 0.3
+SQUIRREL_SCALING = 0.26
+UNICORN_SCALING = 0.3
 
 HEART_SCALING = 0.06
 
 # Constants for game config
 SPAWN_SECONDS = 0.4
 VELOCITY_MIN = 4
-VELOCITY_MAX = 10
+VELOCITY_MAX = 7
 VELOCITY_Y = 3
 
 class MyGame(arcade.Window):
@@ -80,9 +85,17 @@ class MyGame(arcade.Window):
         self.duck_sprite = arcade.Sprite("images/Crossy Road Duck.png", DUCK_SCALING)
         self.elephant_sprite = arcade.Sprite("images/Crossy Road Elephant.png", ELEPHANT_SCALING)
         self.lion_sprite = arcade.Sprite("images/Crossy Road Lion Heart.png", LION_SCALING)
+        self.pig_sprite = arcade.Sprite("images/Crossy Road Pig.png", PIG_SCALING)
+        self.rabbit_sprite = arcade.Sprite("images/Crossy Road Rabbit.png", RABBIT_SCALING)
+        self.reindeer_sprite = arcade.Sprite("images/Crossy Road Reindeer.png", REINDEER_SCALING)
+        self.sheep_sprite = arcade.Sprite("images/Crossy Road Sheep.png", SHEEP_SCALING)
+        self.squirrel_sprite = arcade.Sprite("images/Crossy Road Squirrel.png", SQUIRREL_SCALING)
+        self.unicorn_sprite = arcade.Sprite("images/Crossy Road Unicorn.png", UNICORN_SCALING)
         
         list = [self.bomb_sprite, self.bear_sprite, self.browndog_sprite, self.bunny_sprite, self.cat_sprite,
-                self.chicken_sprite, self.dog_sprite, self.duck_sprite, self.elephant_sprite, self.lion_sprite]
+                self.chicken_sprite, self.dog_sprite, self.duck_sprite, self.elephant_sprite, self.lion_sprite,
+                self.pig_sprite, self.rabbit_sprite, self.reindeer_sprite, self.sheep_sprite, self.squirrel_sprite,
+                self.unicorn_sprite]
         
         # Straight down
         # if random_number == 1:
