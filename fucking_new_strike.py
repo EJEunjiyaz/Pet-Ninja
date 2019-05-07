@@ -25,7 +25,7 @@ SHEEP_SCALING = 0.3
 SQUIRREL_SCALING = 0.26
 UNICORN_SCALING = 0.3
 
-HEART_SCALING = 0.06
+HEART_SCALING = 0.1
 
 # Constants for game config
 SPAWN_SECONDS = 0.4
@@ -139,8 +139,8 @@ class MyGame(arcade.Window):
         list_heart = [self.heart1, self.heart2, self.heart3, self.heart4, self.heart5]
 
         for i in range(len(list_heart)):
-            list_heart[i].center_x = SCREEN_WIDTH - (30*i) - 50
-            list_heart[i].center_y = SCREEN_HEIGHT - 55
+            list_heart[i].center_x = SCREEN_WIDTH - (45*i) - 100
+            list_heart[i].center_y = SCREEN_HEIGHT - 85
             self.heart_list.append(list_heart[i])
         # print(">>>", len(self.heart_list))
 
@@ -149,15 +149,18 @@ class MyGame(arcade.Window):
 
         # Clear the screen to the background color
         arcade.start_render()
+        
         # Draw our sprites
         if self.state == 'stop':
             arcade.draw_text('Press left mouse to start...', 400, 200, arcade.color.WHITE, 40)
         elif self.state == 'active':
+            self.background = arcade.Sprite("images/minecraft.png", center_x=SCREEN_WIDTH/2, center_y=SCREEN_HEIGHT/2, scale=1.7)
+            self.background.draw()
             self.model_list.draw()
             self.bomb_list.draw()
             self.heart_list.draw()
             # Draw text
-            arcade.draw_text(f'SCORE {self.score}', SCREEN_WIDTH-120, SCREEN_HEIGHT-30, arcade.color.BLACK, 16, font_name='Centaur', bold=True)
+            arcade.draw_text(f'SCORE {self.score}', SCREEN_WIDTH-250, SCREEN_HEIGHT-50, arcade.color.WHITE, 25, font_name='Gill Sans')
         
         elif self.state == 'dead':
             arcade.draw_text('GAME OVER', 300, SCREEN_HEIGHT/2, arcade.color.RED_ORANGE, 60, font_name='Showcard Gothic')
@@ -234,7 +237,7 @@ class MyGame(arcade.Window):
         for model in self.model_list:
             if model.right < 0 or model.left > SCREEN_WIDTH or model.top < 0 or model.bottom > SCREEN_HEIGHT:
                 if len(self.heart_list) > 0:
-                    # self.heart_list.pop()
+                    self.heart_list.pop()
                     self.model_list.remove(model)
                 else:
                     self.state = 'dead'             
