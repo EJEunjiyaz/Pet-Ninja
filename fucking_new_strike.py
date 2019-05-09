@@ -78,8 +78,9 @@ class MyGame(arcade.Window):
         # Count time to add more difficult
         self.difficult_time = 0
 
-        self.background_1 = None
-        self.background_2 = None
+        self.is_hit_play = False
+        self.is_hit_howtoplay = False
+        self.is_hit_exit = False
         
         arcade.set_background_color(arcade.color.BLUE_SAPPHIRE)
         self.background = arcade.Sprite("images/minecraft.png", center_x=SCREEN_WIDTH/2, center_y=SCREEN_HEIGHT/2, scale=1.7)
@@ -172,13 +173,21 @@ class MyGame(arcade.Window):
             self.main_screen.left = 0
             self.main_screen.bottom = 0
             self.main_screen.draw()
-            arcade.draw_text("PLAY", 650, 350, arcade.color.BLACK, 60)
-            arcade.draw_text("HOW TO PLAY", 500, 235, arcade.color.BLACK, 60)
-            arcade.draw_text("EXIT", 660, 120, arcade.color.BLACK, 60)
+            if self.is_hit_play is True:
+                arcade.draw_text("PLAY", 650, 350, arcade.color.RED, 60)
+            else:
+                arcade.draw_text("PLAY", 650, 350, arcade.color.BLACK, 60)
+            if self.is_hit_howtoplay is True:
+                arcade.draw_text("HOW TO PLAY", 500, 235, arcade.color.RED, 60)
+            else:
+                arcade.draw_text("HOW TO PLAY", 500, 235, arcade.color.BLACK, 60)
+            if self.is_hit_exit is True:
+                arcade.draw_text("EXIT", 660, 120, arcade.color.RED, 60)
+            else:
+                arcade.draw_text("EXIT", 660, 120, arcade.color.BLACK, 60)
+            
         elif self.state == 'prepare':
             self.background.draw()
-            # if self.prepare_time < 1:
-            #     arcade.draw_text('3', SCREEN_WIDTH/2, SCREEN_HEIGHT/2,)
             seconds = PREPARE_TIME - (self.prepare_count//1) - 1
             seconds = int(seconds)
             if seconds >= 1:
@@ -253,6 +262,25 @@ class MyGame(arcade.Window):
                         self.state = 'dead'
                     # print(len(self.heart_list))
                     self.bomb_list.remove(bomb)
+    
+    def on_mouse_motion(self, x, y, dx, dy):
+        if self.state == 'stop' and 300 < x < 1200:
+            if 320 < y < 430:
+                self.is_hit_play = True
+                self.is_hit_howtoplay = False
+                self.is_hit_exit = False
+            elif 205 < y < 315:
+                self.is_hit_play = False
+                self.is_hit_howtoplay = True
+                self.is_hit_exit = False
+            elif 90 < y < 200:
+                self.is_hit_play = False
+                self.is_hit_howtoplay = False
+                self.is_hit_exit = True
+            else:
+                self.is_hit_play = False
+                self.is_hit_howtoplay = False
+                self.is_hit_exit = False
 
     def update(self, delta_time):
         """ Movement and game logic """
