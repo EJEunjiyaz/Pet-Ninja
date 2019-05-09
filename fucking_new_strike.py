@@ -84,6 +84,7 @@ class MyGame(arcade.Window):
         arcade.set_background_color(arcade.color.BLUE_SAPPHIRE)
         self.background = arcade.Sprite("images/minecraft.png", center_x=SCREEN_WIDTH/2, center_y=SCREEN_HEIGHT/2, scale=1.7)
         self.main_screen = arcade.Sprite("images/main_screen.png")
+        self.gameover_screen = arcade.Sprite("images/gameover_screen.png")
 
     def setup(self):
         """ Set up the game here. Call this function to restart the game. """
@@ -191,9 +192,11 @@ class MyGame(arcade.Window):
             self.heart_list.draw()
             # Draw text
             arcade.draw_text(f'SCORE {self.score}', SCREEN_WIDTH-250, SCREEN_HEIGHT-50, arcade.color.WHITE, 25, font_name='Gill Sans')
-        
         elif self.state == 'dead':
-            arcade.draw_text('GAME OVER', 300, SCREEN_HEIGHT/2, arcade.color.RED_ORANGE, 60, font_name='Showcard Gothic')
+            self.gameover_screen.left = 0
+            self.gameover_screen.bottom = 0
+            self.gameover_screen.draw()
+            arcade.draw_text(f'{self.score}', 280, 130, arcade.color.WHITE, 100)
 
     def on_mouse_press(self, x, y, button, modifiers):
         if button == arcade.MOUSE_BUTTON_LEFT:
