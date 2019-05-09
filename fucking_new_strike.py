@@ -33,6 +33,7 @@ VELOCITY_MIN = 4
 VELOCITY_MAX = 7
 VELOCITY_Y = 3
 PERCENTAGE_BOMB = 0.35
+PREPARE_TIME = 4
 
 class MyGame(arcade.Window):
     """
@@ -67,6 +68,8 @@ class MyGame(arcade.Window):
         self.heart5 = None
         # Count time for spawn model sprite
         self.time = 0
+        # Count time before play the game
+        self.prepare_count = 0
         # Keep the score
         self.score = 0
         self.state = 'stop'
@@ -164,6 +167,19 @@ class MyGame(arcade.Window):
             self.main_screen.left = 0
             self.main_screen.bottom = 0
             self.main_screen.draw()
+            arcade.draw_text("PLAY", 650, 350, arcade.color.BLACK, 60)
+            arcade.draw_text("HOW TO PLAY", 500, 235, arcade.color.BLACK, 60)
+            arcade.draw_text("EXIT", 660, 120, arcade.color.BLACK, 60)
+        elif self.state == 'prepare':
+            self.background.draw()
+            # if self.prepare_time < 1:
+            #     arcade.draw_text('3', SCREEN_WIDTH/2, SCREEN_HEIGHT/2,)
+            seconds = PREPARE_TIME - (self.prepare_count//1) - 1
+            seconds = int(seconds)
+            if seconds >= 1:
+                arcade.draw_text(f"{seconds}", SCREEN_WIDTH/2, SCREEN_HEIGHT/2, arcade.color.RED_DEVIL, 120)
+            else:
+                arcade.draw_text("START", 600, SCREEN_HEIGHT/2, arcade.color.RED_DEVIL, 120)
         elif self.state == 'active':
             self.background.draw()
             self.model_list.draw()
@@ -178,7 +194,7 @@ class MyGame(arcade.Window):
     def on_mouse_press(self, x, y, button, modifiers):
         if button == arcade.MOUSE_BUTTON_LEFT:
             if self.state == 'stop':
-                self.state = 'active'
+                self.state = 'prepare'
                 for model in self.model_list:
                     left_position = model.center_x - (model.width//2)
                     right_position = model.center_x + (model.width//2)
@@ -237,6 +253,13 @@ class MyGame(arcade.Window):
         self.model_list.update()
         self.bomb_list.update()
         self.heart_list.update()
+
+        if self.state == 'prepare':
+            if self.prepare_count < PREPARE_TIME:
+                self.prepare_count += delta_time
+            else:
+                self.prepare_count = 0
+                self.state = 'active'
 
         if self.time <= SPAWN_SECONDS:
             self.time += delta_time
