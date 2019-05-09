@@ -1,5 +1,5 @@
 import arcade
-from random import randint, randrange
+from random import randint, randrange, random
 
 # Constants
 SCREEN_WIDTH = 1500
@@ -32,6 +32,7 @@ SPAWN_SECONDS = 0.4
 VELOCITY_MIN = 4
 VELOCITY_MAX = 7
 VELOCITY_Y = 3
+PERCENTAGE_BOMB = 0.35
 
 class MyGame(arcade.Window):
     """
@@ -69,8 +70,11 @@ class MyGame(arcade.Window):
         # Keep the score
         self.score = 0
         self.state = 'stop'
+
+        self.background_1 = None
+        self.background_2 = None
         
-        arcade.set_background_color(arcade.color.CORNFLOWER_BLUE)
+        arcade.set_background_color(arcade.color.WHITE_SMOKE)
 
     def setup(self):
         """ Set up the game here. Call this function to restart the game. """
@@ -92,42 +96,45 @@ class MyGame(arcade.Window):
         self.squirrel_sprite = arcade.Sprite("images/Crossy Road Squirrel.png", SQUIRREL_SCALING)
         self.unicorn_sprite = arcade.Sprite("images/Crossy Road Unicorn.png", UNICORN_SCALING)
         
-        list = [self.bomb_sprite, self.bear_sprite, self.browndog_sprite, self.bunny_sprite, self.cat_sprite,
-                self.chicken_sprite, self.dog_sprite, self.duck_sprite, self.elephant_sprite, self.lion_sprite,
-                self.pig_sprite, self.rabbit_sprite, self.reindeer_sprite, self.sheep_sprite, self.squirrel_sprite,
-                self.unicorn_sprite]
+        list = [self.bear_sprite, self.browndog_sprite, self.bunny_sprite, self.cat_sprite, self.chicken_sprite,
+                self.dog_sprite, self.duck_sprite, self.elephant_sprite, self.lion_sprite, self.pig_sprite,
+                self.rabbit_sprite, self.reindeer_sprite, self.sheep_sprite, self.squirrel_sprite, self.unicorn_sprite]
         
         # Straight down
         # if random_number == 1:
         if self.state == 'active':
-            random_sprite = randrange(0, len(list))
             velocity = randint(VELOCITY_MIN, VELOCITY_MAX)
             direction = randint(0, 1)
             y = randint(-VELOCITY_Y, VELOCITY_Y)
-            list[random_sprite].center_y = randint(200, SCREEN_HEIGHT)
+            percentage = random()
+            if percentage > PERCENTAGE_BOMB: 
+                random_sprite = randrange(0, len(list))
+                sprite = list[random_sprite]
+            else:
+                sprite = self.bomb_sprite
             if direction == 0:
-                list[random_sprite].right = 0
+                sprite.right = 0
                 if y < 0:
-                    list[random_sprite].center_y = randint(SCREEN_HEIGHT/2, SCREEN_HEIGHT-50)
+                    sprite.center_y = randint(SCREEN_HEIGHT/2, SCREEN_HEIGHT-50)
                 elif y > 0:
-                    list[random_sprite].center_y = randint(50, SCREEN_HEIGHT/2)
+                    sprite.center_y = randint(50, SCREEN_HEIGHT/2)
                 else:
-                    list[random_sprite].center_y = randint(100, SCREEN_HEIGHT-100)
-                list[random_sprite].velocity = (velocity, y)
+                    sprite.center_y = randint(100, SCREEN_HEIGHT-100)
+                sprite.velocity = (velocity, y)
             else:
-                list[random_sprite].left = SCREEN_WIDTH
+                sprite.left = SCREEN_WIDTH
                 if y < 0:
-                    list[random_sprite].center_y = randint(SCREEN_HEIGHT/2, SCREEN_HEIGHT-50)
+                    sprite.center_y = randint(SCREEN_HEIGHT/2, SCREEN_HEIGHT-50)
                 elif y > 0:
-                    list[random_sprite].center_y = randint(50, SCREEN_HEIGHT/2)
+                    sprite.center_y = randint(50, SCREEN_HEIGHT/2)
                 else:
-                    list[random_sprite].center_y = randint(100, SCREEN_HEIGHT-100)
-                list[random_sprite].velocity = (-velocity, y)
+                    sprite.center_y = randint(100, SCREEN_HEIGHT-100)
+                sprite.velocity = (-velocity, y)
         
-            if random_sprite != 0:
-                self.model_list.append(list[random_sprite])
+            if sprite != self.bomb_sprite:
+                self.model_list.append(sprite)
             else:
-                self.bomb_list.append(list[random_sprite])
+                self.bomb_list.append(sprite)
      
     def setup_heart(self):
         self.heart1 = arcade.Sprite("images/heart.png", HEART_SCALING)
@@ -154,8 +161,9 @@ class MyGame(arcade.Window):
         if self.state == 'stop':
             arcade.draw_text('Press left mouse to start...', 400, 200, arcade.color.WHITE, 40)
         elif self.state == 'active':
-            self.background = arcade.Sprite("images/minecraft.png", center_x=SCREEN_WIDTH/2, center_y=SCREEN_HEIGHT/2, scale=1.7)
-            self.background.draw()
+            self.background_1 = arcade.Sprite("images/minecraft.png", center_x=SCREEN_WIDTH/2, center_y=SCREEN_HEIGHT/2, scale=1.7)
+            self.background_2 = arcade.Sprite("images/minecraft_2_fill.png", center_x=SCREEN_WIDTH/2, center_y=SCREEN_HEIGHT/2, scale=0.79)
+            self.background_2.draw()
             self.model_list.draw()
             self.bomb_list.draw()
             self.heart_list.draw()
