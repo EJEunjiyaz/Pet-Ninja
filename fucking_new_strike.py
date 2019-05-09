@@ -4,7 +4,7 @@ from random import randint, randrange, random
 # Constants
 SCREEN_WIDTH = 1500
 SCREEN_HEIGHT = 850
-SCREEN_TITLE = "Strike"
+SCREEN_TITLE = "Pet Ninja"
 
 # Constants used to scale our sprites from their original size
 BOMB_SCALING = 0.27
@@ -74,7 +74,9 @@ class MyGame(arcade.Window):
         self.background_1 = None
         self.background_2 = None
         
-        arcade.set_background_color(arcade.color.WHITE_SMOKE)
+        arcade.set_background_color(arcade.color.BLUE_SAPPHIRE)
+        self.background = arcade.Sprite("images/minecraft.png", center_x=SCREEN_WIDTH/2, center_y=SCREEN_HEIGHT/2, scale=1.7)
+        self.main_screen = arcade.Sprite("images/main_screen.png")
 
     def setup(self):
         """ Set up the game here. Call this function to restart the game. """
@@ -159,11 +161,11 @@ class MyGame(arcade.Window):
         
         # Draw our sprites
         if self.state == 'stop':
-            arcade.draw_text('Press left mouse to start...', 400, 200, arcade.color.WHITE, 40)
+            self.main_screen.left = 0
+            self.main_screen.bottom = 0
+            self.main_screen.draw()
         elif self.state == 'active':
-            self.background_1 = arcade.Sprite("images/minecraft.png", center_x=SCREEN_WIDTH/2, center_y=SCREEN_HEIGHT/2, scale=1.7)
-            self.background_2 = arcade.Sprite("images/minecraft_2_fill.png", center_x=SCREEN_WIDTH/2, center_y=SCREEN_HEIGHT/2, scale=0.79)
-            self.background_2.draw()
+            self.background.draw()
             self.model_list.draw()
             self.bomb_list.draw()
             self.heart_list.draw()
