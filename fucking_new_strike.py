@@ -28,12 +28,13 @@ UNICORN_SCALING = 0.3
 HEART_SCALING = 0.1
 
 # Constants for game config
-SPAWN_SECONDS = 0.4
 VELOCITY_MIN = 4
-VELOCITY_MAX = 7
+VELOCITY_MAX = 9
 VELOCITY_Y = 3
-PERCENTAGE_BOMB = 0.35
+PERCENTAGE_BOMB = 0.25
 PREPARE_TIME = 4
+DIFFICULT_SECONDS = 4
+RATE_DECREASE_SPAWN = 0.06
 
 class MyGame(arcade.Window):
     """
@@ -68,11 +69,14 @@ class MyGame(arcade.Window):
         self.heart5 = None
         # Count time for spawn model sprite
         self.time = 0
+        self.spawn_seconds = 1
         # Count time before play the game
         self.prepare_count = 0
         # Keep the score
         self.score = 0
         self.state = 'stop'
+        # Count time to add more difficult
+        self.difficult_time = 0
 
         self.background_1 = None
         self.background_2 = None
@@ -177,9 +181,9 @@ class MyGame(arcade.Window):
             seconds = PREPARE_TIME - (self.prepare_count//1) - 1
             seconds = int(seconds)
             if seconds >= 1:
-                arcade.draw_text(f"{seconds}", SCREEN_WIDTH/2, SCREEN_HEIGHT/2, arcade.color.RED_DEVIL, 120)
+                arcade.draw_text(f"{seconds}", 700, SCREEN_HEIGHT/2-50, arcade.color.RED_DEVIL, 120)
             else:
-                arcade.draw_text("START", 600, SCREEN_HEIGHT/2, arcade.color.RED_DEVIL, 120)
+                arcade.draw_text("START", 530, SCREEN_HEIGHT/2-50, arcade.color.RED_DEVIL, 120)
         elif self.state == 'active':
             self.background.draw()
             self.model_list.draw()
@@ -202,7 +206,8 @@ class MyGame(arcade.Window):
                     bottom_position = model.center_y - (model.height//2)
                     
                     if left_position <= x <= right_position and bottom_position <= y <= top_position:
-                        self.score += 1
+                        random_score = randint(7,13)
+                        self.score += random_score
                         self.model_list.remove(model)
             
                 for bomb in self.bomb_list:
@@ -227,7 +232,8 @@ class MyGame(arcade.Window):
                 bottom_position = model.center_y - (model.height//2)
                     
                 if left_position <= x <= right_position and bottom_position <= y <= top_position:
-                    self.score += 1
+                    random_score = randint(7,13)
+                    self.score += random_score
                     self.model_list.remove(model)
             
             for bomb in self.bomb_list:
@@ -260,13 +266,20 @@ class MyGame(arcade.Window):
             else:
                 self.prepare_count = 0
                 self.state = 'active'
-
-        if self.time <= SPAWN_SECONDS:
+        
+        if self.time <= self.spawn_seconds:
             self.time += delta_time
         else:
             self.setup()
             self.time = 0
-        
+            
+        if self.difficult_time < DIFFICULT_SECONDS:
+            self.difficult_time += delta_time
+        else:
+            if self.spawn_seconds >= 0.3:
+                self.spawn_seconds -= RATE_DECREASE_SPAWN
+            self.difficult_time = 0
+
         for model in self.model_list:
             if model.right < 0 or model.left > SCREEN_WIDTH or model.top < 0 or model.bottom > SCREEN_HEIGHT:
                 if len(self.heart_list) > 0:
