@@ -34,7 +34,7 @@ VELOCITY_Y = 3
 PERCENTAGE_BOMB = 0.25
 PREPARE_TIME = 4
 DIFFICULT_SECONDS = 4
-RATE_DECREASE_SPAWN = 0.06
+RATE_DECREASE_SPAWN = 0.05
 
 class MyGame(arcade.Window):
     """
@@ -69,7 +69,7 @@ class MyGame(arcade.Window):
         self.heart5 = None
         # Count time for spawn model sprite
         self.time = 0
-        self.spawn_seconds = 1
+        self.spawn_seconds = 1.1
         # Count time before play the game
         self.prepare_count = 0
         # Keep the score
@@ -81,6 +81,7 @@ class MyGame(arcade.Window):
         self.is_hit_play = False
         self.is_hit_howtoplay = False
         self.is_hit_exit = False
+        self.is_hit_menu = False
         
         arcade.set_background_color(arcade.color.BLUE_SAPPHIRE)
         self.background = arcade.Sprite("images/minecraft.png", center_x=SCREEN_WIDTH/2, center_y=SCREEN_HEIGHT/2, scale=1.7)
@@ -203,13 +204,22 @@ class MyGame(arcade.Window):
             self.model_list.draw()
             self.bomb_list.draw()
             self.heart_list.draw()
+
             # Draw text
             arcade.draw_text(f'SCORE {self.score}', SCREEN_WIDTH-250, SCREEN_HEIGHT-50, arcade.color.WHITE, 25, font_name='Gill Sans')
         elif self.state == 'dead':
             self.gameover_screen.left = 0
             self.gameover_screen.bottom = 0
             self.gameover_screen.draw()
-            arcade.draw_text(f'{self.score}', 280, 130, arcade.color.WHITE, 100)
+            arcade.draw_text(f'{self.score}', 280, 280, arcade.color.WHITE, 100)
+            if self.is_hit_menu is True:
+                arcade.draw_text('MAIN MENU', 175, 100, arcade.color.UNMELLOW_YELLOW, 45)
+            else:
+                arcade.draw_text('MAIN MENU', 175, 100, arcade.color.FRENCH_ROSE, 45)
+            if self.is_hit_exit is True:
+                arcade.draw_text('EXIT', 700, 100, arcade.color.UNMELLOW_YELLOW, 45)
+            else:
+                arcade.draw_text('EXIT', 700, 100, arcade.color.FRENCH_ROSE, 45)
 
     def on_mouse_press(self, x, y, button, modifiers):
         if button == arcade.MOUSE_BUTTON_LEFT:
@@ -246,6 +256,12 @@ class MyGame(arcade.Window):
             
             elif self.state == 'howtoplay':
                 self.state = 'stop'
+            
+            elif self.state == 'dead':
+                if self.is_hit_menu is True:
+                    self.state = 'stop'
+                elif self.is_hit_exit is True:
+                    exit()
 
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         if buttons == arcade.MOUSE_BUTTON_LEFT:
@@ -267,12 +283,12 @@ class MyGame(arcade.Window):
                 bottom_position = bomb.center_y - (bomb.height//2)
                 
                 if left_position <= x <= right_position and bottom_position <= y <= top_position:
-                    # print(len(self.heart_list))
+                    print(len(self.heart_list))
                     if len(self.heart_list) > 0:
                         self.heart_list.pop()
                     else:
                         self.state = 'dead'
-                    # print(len(self.heart_list))
+                    print(len(self.heart_list))
                     self.bomb_list.remove(bomb)
     
     def on_mouse_motion(self, x, y, dx, dy):
@@ -292,6 +308,17 @@ class MyGame(arcade.Window):
             else:
                 self.is_hit_play = False
                 self.is_hit_howtoplay = False
+                self.is_hit_exit = False
+
+        if self.state == 'dead' and 75 < y < 160:
+            if 150 < x < 510:
+                self.is_hit_menu = True
+                self.is_hit_exit = False
+            elif 675 < x < 820:
+                self.is_hit_menu = False
+                self.is_hit_exit = True
+            else:
+                self.is_hit_menu = False
                 self.is_hit_exit = False
 
     def update(self, delta_time):
@@ -330,7 +357,8 @@ class MyGame(arcade.Window):
                         self.heart_list.pop()
                         self.model_list.remove(model)
                     else:
-                        self.state = 'dead'             
+                        self.state = 'dead'
+                        self.setup_heart()                        
             
             for bomb in self.bomb_list:
                 if bomb.right < 0 or bomb.left > SCREEN_WIDTH or bomb.top < 0 or bomb.bottom > SCREEN_HEIGHT:
