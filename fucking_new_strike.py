@@ -29,7 +29,7 @@ HEART_SCALING = 0.1
 
 # Constants for game config
 VELOCITY_MIN = 4
-VELOCITY_MAX = 9
+VELOCITY_MAX = 7
 VELOCITY_Y = 3
 PERCENTAGE_BOMB = 0.25
 PREPARE_TIME = 4
@@ -86,6 +86,7 @@ class MyGame(arcade.Window):
         self.background = arcade.Sprite("images/minecraft.png", center_x=SCREEN_WIDTH/2, center_y=SCREEN_HEIGHT/2, scale=1.7)
         self.main_screen = arcade.Sprite("images/main_screen.png")
         self.gameover_screen = arcade.Sprite("images/gameover_screen.png")
+        self.howtoplay_screen = arcade.Sprite("images/howtoplay_screen.png")
 
     def setup(self):
         """ Set up the game here. Call this function to restart the game. """
@@ -185,7 +186,10 @@ class MyGame(arcade.Window):
                 arcade.draw_text("EXIT", 660, 120, arcade.color.RED, 60)
             else:
                 arcade.draw_text("EXIT", 660, 120, arcade.color.BLACK, 60)
-            
+        elif self.state == 'howtoplay':
+            self.howtoplay_screen.left = 0
+            self.howtoplay_screen.bottom = 0
+            self.howtoplay_screen.draw()
         elif self.state == 'prepare':
             self.background.draw()
             seconds = PREPARE_TIME - (self.prepare_count//1) - 1
@@ -210,30 +214,38 @@ class MyGame(arcade.Window):
     def on_mouse_press(self, x, y, button, modifiers):
         if button == arcade.MOUSE_BUTTON_LEFT:
             if self.state == 'stop':
-                self.state = 'prepare'
-                for model in self.model_list:
-                    left_position = model.center_x - (model.width//2)
-                    right_position = model.center_x + (model.width//2)
-                    top_position = model.center_y + (model.height//2)
-                    bottom_position = model.center_y - (model.height//2)
-                    
-                    if left_position <= x <= right_position and bottom_position <= y <= top_position:
-                        random_score = randint(7,13)
-                        self.score += random_score
-                        self.model_list.remove(model)
+                if self.is_hit_play is True:
+                    self.state = 'prepare'
+                    for model in self.model_list:
+                        left_position = model.center_x - (model.width//2)
+                        right_position = model.center_x + (model.width//2)
+                        top_position = model.center_y + (model.height//2)
+                        bottom_position = model.center_y - (model.height//2)
+                        
+                        if left_position <= x <= right_position and bottom_position <= y <= top_position:
+                            random_score = randint(7,13)
+                            self.score += random_score
+                            self.model_list.remove(model)
+                
+                    for bomb in self.bomb_list:
+                        left_position = bomb.center_x - (bomb.width//2)
+                        right_position = bomb.center_x + (bomb.width//2)
+                        top_position = bomb.center_y + (bomb.height//2)
+                        bottom_position = bomb.center_y - (bomb.height//2)
+                        
+                        if left_position <= x <= right_position and bottom_position <= y <= top_position:
+                            if len(self.heart_list) > 0:
+                                self.heart_list.pop()
+                            else:
+                                self.state = 'dead'
+                            self.bomb_list.remove(bomb)
+                elif self.is_hit_howtoplay is True:
+                    self.state = 'howtoplay'
+                elif self.is_hit_exit is True:
+                    exit()
             
-                for bomb in self.bomb_list:
-                    left_position = bomb.center_x - (bomb.width//2)
-                    right_position = bomb.center_x + (bomb.width//2)
-                    top_position = bomb.center_y + (bomb.height//2)
-                    bottom_position = bomb.center_y - (bomb.height//2)
-                    
-                    if left_position <= x <= right_position and bottom_position <= y <= top_position:
-                        if len(self.heart_list) > 0:
-                            self.heart_list.pop()
-                        else:
-                            self.state = 'dead'
-                        self.bomb_list.remove(bomb)
+            elif self.state == 'howtoplay':
+                self.state = 'stop'
 
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         if buttons == arcade.MOUSE_BUTTON_LEFT:
@@ -298,30 +310,31 @@ class MyGame(arcade.Window):
                 self.prepare_count = 0
                 self.state = 'active'
         
-        if self.time <= self.spawn_seconds:
-            self.time += delta_time
-        else:
-            self.setup()
-            self.time = 0
-            
-        if self.difficult_time < DIFFICULT_SECONDS:
-            self.difficult_time += delta_time
-        else:
-            if self.spawn_seconds >= 0.3:
-                self.spawn_seconds -= RATE_DECREASE_SPAWN
-            self.difficult_time = 0
+        if self.state == 'active':
+            if self.time <= self.spawn_seconds:
+                self.time += delta_time
+            else:
+                self.setup()
+                self.time = 0
+                
+            if self.difficult_time < DIFFICULT_SECONDS:
+                self.difficult_time += delta_time
+            else:
+                if self.spawn_seconds >= 0.3:
+                    self.spawn_seconds -= RATE_DECREASE_SPAWN
+                self.difficult_time = 0
 
-        for model in self.model_list:
-            if model.right < 0 or model.left > SCREEN_WIDTH or model.top < 0 or model.bottom > SCREEN_HEIGHT:
-                if len(self.heart_list) > 0:
-                    self.heart_list.pop()
-                    self.model_list.remove(model)
-                else:
-                    self.state = 'dead'             
-        
-        for bomb in self.bomb_list:
-            if bomb.right < 0 or bomb.left > SCREEN_WIDTH or bomb.top < 0 or bomb.bottom > SCREEN_HEIGHT:
-                self.bomb_list.remove(bomb)
+            for model in self.model_list:
+                if model.right < 0 or model.left > SCREEN_WIDTH or model.top < 0 or model.bottom > SCREEN_HEIGHT:
+                    if len(self.heart_list) > 0:
+                        self.heart_list.pop()
+                        self.model_list.remove(model)
+                    else:
+                        self.state = 'dead'             
+            
+            for bomb in self.bomb_list:
+                if bomb.right < 0 or bomb.left > SCREEN_WIDTH or bomb.top < 0 or bomb.bottom > SCREEN_HEIGHT:
+                    self.bomb_list.remove(bomb)
 
 
 def main():
