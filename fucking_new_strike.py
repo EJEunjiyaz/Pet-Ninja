@@ -34,7 +34,7 @@ VELOCITY_Y = 3
 PERCENTAGE_BOMB = 0.25
 PREPARE_TIME = 4
 DIFFICULT_SECONDS = 4
-RATE_DECREASE_SPAWN = 0.05
+RATE_DECREASE_SPAWN = 0.06
 
 class MyGame(arcade.Window):
     """
@@ -206,7 +206,7 @@ class MyGame(arcade.Window):
             self.heart_list.draw()
 
             # Draw text
-            arcade.draw_text(f'SCORE {self.score}', SCREEN_WIDTH-250, SCREEN_HEIGHT-50, arcade.color.WHITE, 25, font_name='Gill Sans')
+            arcade.draw_text(f'SCORE {self.score}', SCREEN_WIDTH-300, SCREEN_HEIGHT-50, arcade.color.WHITE, 25)
         elif self.state == 'dead':
             self.gameover_screen.left = 0
             self.gameover_screen.bottom = 0
